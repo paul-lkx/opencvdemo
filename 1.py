@@ -3,23 +3,17 @@
 import cv2
 import numpy as np
 
-img = cv2.imread('j1.jpg',0)
-kernel = np.ones((5,5),np.uint8)
 
-erosion = cv2.erode(img,kernel,iterations=1)
-dilation = cv2.dilate(img,kernel,iterations=1)
-opening = cv2.morphologyEx(img,cv2.MORPH_OPEN,kernel)
-closing = cv2.morphologyEx(img,cv2.MORPH_CLOSE,kernel)
+img = cv2.imread('j0.jpg',0)
+ret,thresh = cv2.threshold(img,127,255,0)
+image,contours,hierarchy = cv2.findContours(thresh, 1, 2)
 
-cv2.namedWindow('Original',cv2.WINDOW_KEEPRATIO)
-cv2.namedWindow('morphologyTransformation',cv2.WINDOW_KEEPRATIO)
+cnt = contours[0]
+M = cv2.moments(cnt)
+area = cv2.contourArea(cnt)
 
-cv2.imshow('Original',img)
-# cv2.imshow('morphologyTransformation',erosion)
-# cv2.imshow('morphologyTransformation',dilation)
-# cv2.imshow('morphologyTransformation',opening)
-cv2.imshow('morphologyTransformation',closing)
+print M,area
 
-k = cv2.waitKey(0)
-if k == 27:
-    cv2.destroyAllWindows()
+cx = int(M['m10']/M['m00'])
+cy = int(M['m01']/M['m00'])
+print(cx,cy)
